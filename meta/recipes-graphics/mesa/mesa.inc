@@ -22,14 +22,13 @@ inherit autotools pkgconfig pythonnative gettext distro_features_check
 
 REQUIRED_DISTRO_FEATURES = "opengl"
 
-EXTRA_OECONF = "--enable-shared-glapi"
-
-PACKAGECONFIG ??= "egl gles dri \
+PACKAGECONFIG ??= "\
 		${@bb.utils.contains('DISTRO_FEATURES', 'x11', 'x11', '', d)}\
 		${@bb.utils.contains('DISTRO_FEATURES', 'wayland', 'wayland', '', d)}\
 		"
 
 X11_DEPS = "xf86driproto glproto virtual/libx11 libxext libxxf86vm libxdamage libxfixes"
+PACKAGECONFIG[static] = "--enable-static --disable-shared, --disable-static"
 PACKAGECONFIG[x11] = "--enable-glx-tls,--disable-glx,${X11_DEPS}"
 PACKAGECONFIG[xvmc] = "--enable-xvmc,--disable-xvmc,libxvmc"
 PACKAGECONFIG[wayland] = ",,wayland-native wayland"
@@ -37,9 +36,11 @@ PACKAGECONFIG[wayland] = ",,wayland-native wayland"
 DRIDRIVERS = "swrast"
 DRIDRIVERS_append_x86 = ",radeon,r200,nouveau,i965,i915"
 DRIDRIVERS_append_x86-64 = ",radeon,r200,nouveau,i965,i915"
-PACKAGECONFIG[dri] = "--enable-dri --with-dri-drivers=${DRIDRIVERS} --enable-gbm, --disable-dri, dri2proto libdrm"
+PACKAGECONFIG[dri] = "--enable-dri --with-dri-drivers=${DRIDRIVERS} --enable-gbm, --disable-dri --disable-gbm, dri2proto libdrm"
 PACKAGECONFIG[dri3] = "--enable-dri3, --disable-dri3, dri3proto presentproto libxshmfence"
 
+PACKAGECONFIG[osmesa] = "--enable-osmesa --disable-driglx-direct"
+#PACKAGECONFIG[osmesa] = "--enable-osmesa --disable-driglx-direct --with-osmesa-lib-name=GL"
 PACKAGECONFIG[gles] = "--enable-gles1 --enable-gles2, --disable-gles1 --disable-gles2"
 
 EGL_PLATFORMS  = "drm"
@@ -82,6 +83,7 @@ PACKAGES =+ "libegl-mesa libegl-mesa-dev \
              libwayland-egl libwayland-egl-dev \
              libxvmcsoftpipe libxvmcsoftpipe-dev \
              libxatracker libxatracker-dev \
+             libgl-mesa-staticdev \
              mesa-megadriver \
             "
 
@@ -129,17 +131,18 @@ python __anonymous() {
 python mesa_populate_packages() {
     pkgs = ['mesa', 'mesa-dev', 'mesa-dbg']
     for pkg in pkgs:
-        d.setVar("RPROVIDES_%s" % pkg, pkg.replace("mesa", "mesa-dri", 1))
-        d.setVar("RCONFLICTS_%s" % pkg, pkg.replace("mesa", "mesa-dri", 1))
-        d.setVar("RREPLACES_%s" % pkg, pkg.replace("mesa", "mesa-dri", 1))
+        d.setVar("RPROVIDES_%s" % pkg, pkg)
+        d.setVar("RCONFLICTS_%s" % pkg, pkg)
+        d.setVar("RREPLACES_%s" % pkg, pkg)
 
     import re
-    dri_drivers_root = os.path.join(d.getVar('libdir', True), "dri")
-    dri_pkgs = os.listdir(d.getVar('PKGD', True) + dri_drivers_root)
+    drivers_root = d.getVar('libdir', True)
+    mesa_pkgs = os.listdir(d.getVar('PKGD', True) + drivers_root)
     lib_name = d.expand("${MLPREFIX}mesa-megadriver")
-    for p in dri_pkgs:
-        m = re.match('^(.*)_dri\.so$', p)
+    for p in mesa_pkgs:
+        m = re.match('^(.*).so$', p)
         if m:
+            print m
             pkg_name = " ${MLPREFIX}mesa-driver-%s" % legitimize_package_name(m.group(1))
             d.appendVar("RPROVIDES_%s" % lib_name, pkg_name)
             d.appendVar("RCONFLICTS_%s" % lib_name, pkg_name)
@@ -169,14 +172,16 @@ FILES_libxatracker = "${libdir}/libxatracker.so.*"
 FILES_${PN}-dev = "${libdir}/pkgconfig/dri.pc"
 FILES_libegl-mesa-dev = "${libdir}/libEGL.* ${includedir}/EGL ${includedir}/KHR ${libdir}/pkgconfig/egl.pc"
 FILES_libgbm-dev = "${libdir}/libgbm.* ${libdir}/pkgconfig/gbm.pc ${includedir}/gbm.h"
-FILES_libgl-mesa-dev = "${libdir}/libGL.* ${includedir}/GL ${libdir}/pkgconfig/gl.pc"
-FILES_libglapi-dev = "${libdir}/libglapi.*"
+FILES_libgl-mesa-dev = "${libdir}/libGL.so* ${includedir}/GL ${libdir}/pkgconfig/gl.pc"
+FILES_libglapi-dev = "${libdir}/libglapi.so*"
 FILES_libgles1-mesa-dev = "${libdir}/libGLESv1*.* ${includedir}/GLES ${libdir}/pkgconfig/glesv1*.pc"
 FILES_libgles2-mesa-dev = "${libdir}/libGLESv2.* ${includedir}/GLES2 ${libdir}/pkgconfig/glesv2.pc"
 FILES_libgles3-mesa-dev = "${includedir}/GLES3"
-FILES_libosmesa-dev = "${libdir}/libOSMesa.* ${includedir}/osmesa.h ${libdir}/pkgconfig/osmesa.pc"
+FILES_libosmesa-dev = "${libdir}/libOSMesa.so* ${includedir}/osmesa.h ${libdir}/pkgconfig/osmesa.pc"
 FILES_libwayland-egl-dev = "${libdir}/pkgconfig/wayland-egl.pc ${libdir}/libwayland-egl.*"
 FILES_libxvmcsoftpipe-dev = "${libdir}/libXvMCsoftpipe.so ${libdir}/libXvMCsoftpipe.la"
 FILES_libxatracker-dev = "${libdir}/libxatracker.so ${libdir}/libxatracker.la \
                           ${includedir}/xa_tracker.h ${includedir}/xa_composite.h ${includedir}/xa_context.h \
                           ${libdir}/pkgconfig/xatracker.pc"
+
+FILES_libgl-mesa-staticdev = "${libdir}/*.a ${libdir}/*.la"

@@ -1,0 +1,24 @@
+diff --git a/Makefile.am b/Makefile.am
+index 024bff3..0cbbef5 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -24,5 +24,6 @@
+ 
+ AUTOMAKE_OPTIONS = foreign
+ ACLOCAL_AMFLAGS = -I m4
++AM_LDFLAGS = -static
+ 
+ SUBDIRS = src
+diff --git a/src/osdemos/Makefile.am b/src/osdemos/Makefile.am
+index 81df02e..b988763 100644
+--- a/src/osdemos/Makefile.am
++++ b/src/osdemos/Makefile.am
+@@ -33,6 +33,8 @@ bin_PROGRAMS = \
+ 	osdemo32
+ endif
+ 
++osdemo_LDFLAGS = -static
++
+ osdemo16_SOURCES = osdemo16.c
+ osdemo32_SOURCES = osdemo32.c
+ osdemo_LDADD = $(OSMESA_LIBS) ../util/libutil.la

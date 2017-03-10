@@ -15,6 +15,7 @@ hob-image-*.bb
 *.rej
 *~
 !meta-yocto
+!meta-oe
 !meta-yocto-bsp
 !meta-yocto-imported
 documentation/user-manual/user-manual.html

@@ -143,13 +143,13 @@ while true; do
     shift
 done
 
-if [ ! -c /dev/net/tun ] ; then
-	echo "TUN control device /dev/net/tun is unavailable; you may need to enable TUN (e.g. sudo modprobe tun)"
-	exit 1
-elif [ ! -w /dev/net/tun ] ; then
-	echo "TUN control device /dev/net/tun is not writable, please fix (e.g. sudo chmod 666 /dev/net/tun)"
-	exit 1
-fi
+#if [ ! -c /dev/net/tun ] ; then
+#	echo "TUN control device /dev/net/tun is unavailable; you may need to enable TUN (e.g. sudo modprobe tun)"
+#	exit 1
+#elif [ ! -w /dev/net/tun ] ; then
+#	echo "TUN control device /dev/net/tun is not writable, please fix (e.g. sudo chmod 666 /dev/net/tun)"
+#	exit 1
+#fi
 
 # Report errors for missing combinations of options
 if [ -z "$MACHINE" -a -z "$KERNEL" -a -z "$VM" ]; then

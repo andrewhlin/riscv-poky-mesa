@@ -1,6 +1,7 @@
 require recipes-devtools/qemu/qemu.inc
 
 SRC_URI = "gitsm://github.com/martinmaas/riscv-qemu.git;destsuffix=${S};branch=legacy-poky"
+#SRC_URI = "git://copr-dist-git.fedorainfracloud.org/git/rjones/riscv/riscv-qemu.git;destsuffix=${S};branch=master"
 SRCREV_pn-qemu-native = "b0cf38d08a4779ec12d7189878b2e57d2b56ec6b"
 SRCREV_pn-nativesdk-qemu = "b0cf38d08a4779ec12d7189878b2e57d2b56ec6b"
 

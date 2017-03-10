@@ -261,7 +261,7 @@ else
         n2=$(($n1 + 1))
 
         KERNEL_NETWORK_CMD="ip=192.168.7.$n2::192.168.7.$n1:255.255.255.0"
-        QEMU_TAP_CMD="-net tap,vlan=0,ifname=$TAP,script=no,downscript=no"
+        QEMU_TAP_CMD="-net user,vlan=0,ifname=$TAP,script=no,downscript=no"
         if [ "$VHOST_ACTIVE" = "yes" ]; then
             QEMU_NETWORK_CMD="-net nic,model=virtio $QEMU_TAP_CMD,vhost=on"
         else
@@ -606,7 +606,7 @@ if [ "$MACHINE" = "qemuriscv64" ]; then
       QEMU_HOSTFWD=",$HOSTFWD_OPT"
     fi
     #QEMU_SYSTEM_OPTIONS="-netdev user$QEMU_HOSTFWD,id=net0 -device virtio-net-device,netdev=net0 -device virtio-scsi-device -drive file=$ROOTFS,format=raw,id=hd0 -device scsi-hd,drive=hd0 -chardev pty,id=tty0 -device virtio-serial-device -device virtserialport,chardev=tty0"
-    QEMU_SYSTEM_OPTIONS="-kernel $BBL_PATH -append $KERNEL -drive file=$ROOTFS,format=raw -nographic"
+    QEMU_SYSTEM_OPTIONS="-kernel $BBL_PATH -append $KERNEL -drive file=$ROOTFS,format=raw"
     QEMUOPTIONS="$QEMU_SYSTEM_OPTIONS"
 fi
 

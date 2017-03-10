@@ -20,6 +20,7 @@ SRC_URI = "ftp://ftp.freedesktop.org/pub/mesa/demos/${PV}/${BPN}-${PV}.tar.bz2 \
     file://0008-glsl-perf-Add-few-missing-.glsl-.vert-.frag-files-to.patch \
     file://0009-glsl-perf-Install-.glsl-.vert-.frag-files.patch \
     file://0010-sharedtex_mt-fix-rendering-thread-hang.patch \
+    file://static-linking.patch \
 "
 SRC_URI[md5sum] = "72613a2c8c013716db02e3ff59d29061"
 SRC_URI[sha256sum] = "e4bfecb5816ddd4b7b37c1bc876b63f1f7f06fda5879221a9774d0952f90ba92"
@@ -42,13 +43,14 @@ PACKAGECONFIG[freetype2] = "--enable-freetype2,--disable-freetype2,freetype"
 PACKAGECONFIG[gbm] = "--enable-gbm,--disable-gbm,virtual/libgl"
 PACKAGECONFIG[gles1] = "--enable-gles1,--disable-gles1,virtual/libgles1"
 PACKAGECONFIG[gles2] = "--enable-gles2,--disable-gles2,virtual/libgles2"
-PACKAGECONFIG[glut] = "--with-glut=${STAGING_EXECPREFIXDIR},--without-glut,"
+PACKAGECONFIG[glut] = "--with-glut=${STAGING_EXECPREFIXDIR},--without-glut,mesa-glut,"
 PACKAGECONFIG[osmesa] = "--enable-osmesa,--disable-osmesa,"
 PACKAGECONFIG[vg] = "--enable-vg,--disable-vg,virtual/libopenvg"
 PACKAGECONFIG[wayland] = "--enable-wayland,--disable-wayland,virtual/libgl wayland"
 PACKAGECONFIG[x11] = "--enable-x11,--disable-x11,virtual/libx11"
 PACKAGECONFIG[glew] = "--enable-glew,--disable-glew,glew"
 PACKAGECONFIG[glu] = "--enable-glu,--disable-glu,virtual/libgl"
+PACKAGECONFIG[static] = "--enable-static, --disable-static"
 
 do_install_append() {
 	# it can be completely empty when all PACKAGECONFIG options are disabled
