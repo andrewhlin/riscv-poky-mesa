@@ -1,5 +1,8 @@
 Yocto/OpenEmbedded RISC-V Port
 ==============================
+This repo is a dump of all of the work I've done on top of riscv-poky to get Mesa, X, and openGL programs to run in simulation (QEMU and spike).
+
+This was not done in a clean way or (probably) in proper openembedded style. I basically threw things together until they worked.
 
 `riscv-poky` is a full Linux Distribution for RISC-V, based on the Yocto Project and OpenEmbedded. It enables users to cross-compile a wide range of software for RISC-V and package them as file system images, or to be used with a package manager.
 
@@ -36,7 +39,7 @@ Getting Started
 
 To get started, clone the `riscv/riscv-poky` repository (poky is the name of the distribution that Yocto generates):
 
->```
+```
 git clone https://github.com/riscv/riscv-poky.git
 cd riscv-poky
 ```
